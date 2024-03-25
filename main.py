@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+# This application is only intended for use on Microsoft Windows(tm)
 #
 # Paper day use ticket logger for California State Parks
 # that do not use R2S2.
@@ -191,13 +191,14 @@ def main():
 
     while menu != "q":
         print("Sale Mode")
+        print(f"Current User: {vsa_name}")
         print("=========")
         menu = input("""
         Select a Menu Number:
         1: Day Use Sale
         2: Senior Day Use Sale
         3: Disabled Discount Day Use Sale
-        4: Change VSA name
+        4: Change current user
         5: Quit and Print XREPORT
         > """)
 
