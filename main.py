@@ -30,6 +30,10 @@ from time import sleep
 from datetime import datetime
 import os, subprocess
 
+# Park name. Edit for use in different state parks.
+park_name = "Portola Redwoods State Park"
+
+# Folder to save xreports in. Default is the Desktop.
 xreport_folder = os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'] + '\Desktop'
 
 #Payment Function
@@ -103,7 +107,7 @@ def ticket_validation(input_string):
 
 # Main function
 def main():
-    print("Portola Redwoods State Park")
+    print(park_name)
     print("Day Use Recorder\n")
     print("""\nCopyright (c) 2021, 2023 Ryan Porter""")
     print("""
