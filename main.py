@@ -20,7 +20,7 @@
 # This program is distributed in the hope that it will be useful, but
 # WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-# Public License for more details.
+# Public License for more details. 
 #
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see https://www.gnu.org/license/.
@@ -85,6 +85,22 @@ def save_transaction(car_qty,payment_method,subtotal,check_num,vsa_name,ticket_t
     transaction_string += "===\n\n"  
     return transaction_string
 
+def ticket_validation(input_string):
+    """Validate starting ticket number input.
+    input_string: User input prompt
+    """
+    ticket_number = int()
+    while True:
+        try:
+            ticket_number = int(input(input_string))
+            return ticket_number
+        except ValueError:
+            print("Error: Invalid ticket number")
+            print("Please enter a valid ticket number with no leading letters")
+            continue
+    
+    return ticket_number
+
 # Main function
 def main():
     print("Portola Redwoods State Park")
@@ -120,12 +136,11 @@ def main():
     today = "{:%m-%d-%Y}".format(datetime.now())
 
     # Create XREPORT file
-    xfilename = xreport_folder + "\\" + today + ".txt"
-
+    xfilename = f"{xreport_folder}\\xreport_{today}.txt"
     vsa_name = input("Enter your name: ")
-    starting_dayuse_ticket = input("Enter starting day use ticket number without any leading letters: ")
-    starting_senior_ticket = input("Enter starting senior ticket number without any leading letters: ")
-    starting_disabled_ticket = input("Enter starting disabled ticket number without any leading letters: ")
+    starting_dayuse_ticket = ticket_validation("Enter starting day use ticket number without any leading letters: ")
+    starting_senior_ticket = ticket_validation("Enter starting senior ticket number without any leading letters: ")
+    starting_disabled_ticket = ticket_validation("Enter starting disabled ticket number without any leading letters: ")
     current_dayuse_ticket = int(starting_dayuse_ticket)
     current_senior_ticket = int(starting_senior_ticket)
     current_disabled_ticket = int(starting_disabled_ticket)
@@ -136,10 +151,22 @@ def main():
     xfile_header += f'{today}\n'
     xfile_header += f'Employee: {vsa_name}\n\n'
 
-    f = open(xfilename, 'x')
+    try:
+        f = open(xfilename, 'x')
+        f.close()
+    # Make a new xreport file if one for today already exists
+    except FileExistsError:
+        print("File exists, starting new file...")
+        count = 0
+        for filename in os.listdir(xreport_folder):
+            if filename.startswith(f"xreport_{today}"):
+                count += 1
+        xfilename = f"{xreport_folder}\\xreport_{today}-{str(count)}.txt"
+
 
     with open(xfilename, 'w') as xfile:
         xfile.write(xfile_header)
+        xfile.close()
 
     os.system('cls')
 
@@ -179,6 +206,7 @@ def main():
                         total_cash += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
+                            xfile.close()
 
                     case "2":
                         print("Payment method: Card")
@@ -190,6 +218,7 @@ def main():
                         current_dayuse_ticket += (1 * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
+                            xfile.close()
                     case "3":
                         print("Payment method: Check")
                         payVars = payment(3,10,car_amt)
@@ -202,6 +231,7 @@ def main():
                         total_check += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
+                            xfile.close()
                         
             case "2":
                 os.system('cls')
@@ -224,6 +254,7 @@ def main():
                         total_cash += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
+                            xfile.close()
 
                     case "2":
                         print("Payment method: Card")
@@ -235,6 +266,7 @@ def main():
                         current_senior_ticket += (1 * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
+                            xfile.close()
                     case "3":
                         print("Payment method: Check")
                         payVars = payment(3,ticket_price,car_amt)
@@ -247,6 +279,7 @@ def main():
                         total_check += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
+                            xfile.close()
 
             case "3":
                 os.system('cls')
@@ -269,6 +302,7 @@ def main():
                         total_cash += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
+                            xfile.close()
 
                     case "2":
                         print("Payment method: Card")
@@ -280,6 +314,7 @@ def main():
                         current_disabled_ticket += (1 * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
+                            xfile.close()
                     case "3":
                         print("Payment method: Check")
                         payVars = payment(3,ticket_price,car_amt)
@@ -292,6 +327,7 @@ def main():
                         total_check += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
+                            xfile.close()
 
             case "4":
                 final_dayuse_ticket = current_dayuse_ticket
@@ -306,8 +342,7 @@ def main():
                 xreport += today + '\n'
                 xreport += f'Starting Day Use Ticket: H{starting_dayuse_ticket}\n'
                 xreport += f'Starting Senior Ticket: B{starting_senior_ticket}\n'
-                xreport += f'Starting Disabled Ticket: A{starting_disabled_ticket}\n'
-                xreport += ""
+                xreport += f'Starting Disabled Ticket: A{starting_disabled_ticket}\n\n'
                 xreport += f'Unsold Day Use Ticket: H{final_dayuse_ticket}\n'
                 xreport += f'Unsold Senior Day Use Ticket: B{final_senior_ticket}\n'
                 xreport += f'Unsold Disabled Day Use Ticket: A{final_disabled_ticket}\n\n'
@@ -321,7 +356,7 @@ def main():
                 xreport += f'Total Cash: ${total_cash}.00'
                 with open(xfilename, 'a') as xfile:
                     xfile.write(xreport)
-                    
+                    xfile.close()
                 os.system('cls')
                 print(f'XReport saved in {xfilename}.')
                 print('\n'.join(xreport.splitlines()[-19:]))
