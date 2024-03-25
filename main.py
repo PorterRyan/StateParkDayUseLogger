@@ -221,7 +221,7 @@ def main():
                         transaction_report = save_transaction(car_amt,"Cash",payVars,0,vsa_name,ticket_type,ticket_number)
                         print(transaction_report)
                         current_senior_ticket += (1 * car_amt)
-                        total_cash += t(ticket_price * car_amt)
+                        total_cash += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
 
