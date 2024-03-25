@@ -38,6 +38,11 @@ xreport_folder = os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'] + '\Desktop'
 
 #Payment Function
 def payment(method,ticket_price,qty):
+    """ Payment calculator function.
+    method: Payment method. 1 = Cash, 2 = Card, 3 = Check
+    ticket_price: Ticket price for selected sale type.
+    qty: Number of tickets being sold.
+    """
     print("Running payment() now.")
     subtotal = int(ticket_price) * int(qty)
     if method == 1:
@@ -60,6 +65,15 @@ def payment(method,ticket_price,qty):
         return subtotal, check_num
 
 def save_transaction(car_qty,payment_method,subtotal,check_num,vsa_name,ticket_type,ticket_num):
+    """ Generate a transaction report.
+    car_qty: Number of tickets being sold
+    payment_method: Payment method (string). Use "Cash", "Card", or "Check"
+    subtotal: Transaction total
+    check_num: If paying by check, include the check number
+    vsa_name: Name of service aide conducting the transaction
+    ticket_type: Type of ticket (Day use, Senior, Disabled Discount)
+    ticket_num: Current ticket number at start of transaction.
+    """
     timestamp = str(datetime.now())
     car_qty = int(car_qty)
     ticket_list = []
@@ -102,8 +116,6 @@ def ticket_validation(input_string):
             print("Error: Invalid ticket number")
             print("Please enter a valid ticket number with no leading letters")
             continue
-    
-    return ticket_number
 
 # Main function
 def main():
@@ -185,7 +197,8 @@ def main():
         1: Day Use Sale
         2: Senior Day Use Sale
         3: Disabled Discount Day Use Sale
-        4: Quit and Print XREPORT
+        4: Change VSA name
+        5: Quit and Print XREPORT
         > """)
 
         match menu:
@@ -334,6 +347,11 @@ def main():
                             xfile.close()
 
             case "4":
+                os.system('cls')
+                print("Change Current Service Aide")
+                vsa_name = input("Enter your name: ")
+
+            case "5":
                 final_dayuse_ticket = current_dayuse_ticket
                 final_senior_ticket = current_senior_ticket
                 final_disabled_ticket = current_disabled_ticket
