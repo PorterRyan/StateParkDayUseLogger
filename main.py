@@ -5,7 +5,7 @@
 #
 # Created with Python 3.12.2
 #
-# Version a1.0.0.0
+# Version 1.0.0.0
 # 
 # Created by Ryan Porter (github.com/PorterRyan). 
 # Copyright 2024 Ryan Porter. This software is licensed under the GNU 
