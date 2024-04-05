@@ -138,10 +138,10 @@ def main():
 
         Please note that this program uses Python modules that are covered
         under their own licenses. The license for Python itself, as well as
-        its module time, os, subprocess, and datetime, can be found at https://docs.python.org/3/license.html.
-        This software may have been compiled for use on
-        Microsoft Windows systems using Nuitka, which is licensed under the
-        Apache-2.0 license.
+        its module time, os, subprocess, and datetime, can be found at 
+        https://docs.python.org/3/license.html. This software may have been 
+        compiled for use on Microsoft Windows systems using Nuitka, which is 
+        licensed under the Apache-2.0 license.
 
         You can contact the author of this program at github.com/PorterRyan.
         """)
@@ -199,7 +199,8 @@ def main():
         2: Senior Day Use Sale
         3: Disabled Discount Day Use Sale
         4: Change current user
-        5: Quit and Print XREPORT
+        5: Display Current Ticket Numbers
+        6: Quit and Print XREPORT
         > """)
 
         match menu:
@@ -353,6 +354,15 @@ def main():
                 vsa_name = input("Enter your name: ")
 
             case "5":
+                os.system('cls')
+                print("""Current Ticket Numbers
+                      ======================""")
+                print(f"Current Day Use Ticket: {current_dayuse_ticket}")
+                print(f"Current Senior Ticket: {current_senior_ticket}")
+                print(f"Current Disabled Discount Ticket: {current_disabled_ticket}")
+                input("Press Enter to return to main menu")
+
+            case "6":
                 final_dayuse_ticket = current_dayuse_ticket
                 final_senior_ticket = current_senior_ticket
                 final_disabled_ticket = current_disabled_ticket
