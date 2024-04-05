@@ -121,7 +121,7 @@ def ticket_validation(input_string):
 def main():
     print(park_name)
     print("Day Use Recorder\n")
-    print("""\nCopyright (c) 2021, 2023 Ryan Porter""")
+    print("""\nCopyright (c) 2024 Ryan Porter""")
     print("""
         This program is free software: You can redistribute it and/or modify
         it under the terms of the GNU General Public License as published by
@@ -251,6 +251,21 @@ def main():
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
                             xfile.close()
+                    
+                    case _:
+                        print("Payment method: Cash")
+                        payVars = payment(1, 10, car_amt)
+                        print("payVars = " + str(payVars))
+                        ticket_number = current_dayuse_ticket
+
+                        # Save Report
+                        transaction_report = save_transaction(car_amt,"Cash",payVars,0,vsa_name,ticket_type,ticket_number)
+                        print(transaction_report)
+                        current_dayuse_ticket += (1 * car_amt) 
+                        total_cash += (ticket_price * car_amt)
+                        with open(xfilename, 'a') as xfile:
+                            xfile.write(transaction_report)
+                            xfile.close()
                         
             case "2":
                 os.system('cls')
@@ -299,6 +314,21 @@ def main():
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
                             xfile.close()
+                    
+                    case _:
+                        print("Payment method: Cash")
+                        payVars = payment(1, ticket_price, car_amt)
+                        print("payVars = " + str(payVars))
+                        ticket_number = current_senior_ticket
+
+                        # Save Report
+                        transaction_report = save_transaction(car_amt,"Cash",payVars,0,vsa_name,ticket_type,ticket_number)
+                        print(transaction_report)
+                        current_senior_ticket += (1 * car_amt)
+                        total_cash += (ticket_price * car_amt)
+                        with open(xfilename, 'a') as xfile:
+                            xfile.write(transaction_report)
+                            xfile.close()
 
             case "3":
                 os.system('cls')
@@ -344,6 +374,21 @@ def main():
                         print(transaction_report)
                         current_disabled_ticket += (1 * car_amt)
                         total_check += (ticket_price * car_amt)
+                        with open(xfilename, 'a') as xfile:
+                            xfile.write(transaction_report)
+                            xfile.close()
+
+                    case _:
+                        print("Payment method: Cash")
+                        payVars = payment(1, ticket_price, car_amt)
+                        print("payVars = " + str(payVars))
+                        ticket_number = current_disabled_ticket
+
+                        # Save Report
+                        transaction_report = save_transaction(car_amt,"Cash",payVars,0,vsa_name,ticket_type,ticket_number)
+                        print(transaction_report)
+                        current_disabled_ticket += (1 * car_amt)
+                        total_cash += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
                             xfile.close()
