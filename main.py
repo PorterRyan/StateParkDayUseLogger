@@ -64,6 +64,65 @@ def payment(method,ticket_price,qty):
         check_num = input("Enter check number: ")
         return subtotal, check_num
 
+def void_ticket():
+    """ Void a day use ticket.
+    """
+
+    os.system('cls')
+    ticket_type = input("Ticket Type: [1] Regular Day Use  [2] Senior Day Use  [3] Disabled Day Use:")
+    ticket_number = ticket_validation("Ticket number (no leading letters)")
+    payment_method = input("Payment method used: [1] Cash  [2] Card  [3] Check")
+    void_string = """====
+    VOID
+    ====
+
+    """
+    match ticket_type:
+        
+        case "1":
+            print(f"Voiding ticket # H{ticket_number}.")
+            void_string += f"Ticket H{ticket_number}\n"
+            if payment_method == "1":
+                total_cash -= 10
+                void_string += f"Total Cash -$10.00\n"
+            elif payment_method == "3":
+                total_check -= 10
+                void_string += f"Total Check -$10.00\n"
+            else:
+                print("Void credit transaction using credit card reader.")
+            
+        case "2":
+            print(f"Voiding ticket # B{ticket_number}.")
+            void_string += f"Ticket B{ticket_number}\n"
+            if payment_method == "1":
+                total_cash -= 9
+                void_string += f"Total Cash -$9.00\n"
+            elif payment_method == "3":
+                total_check -= 9
+                void_string += f"Total Check -$9.00\n"
+            else:
+                print("Void credit transaction using credit card reader.")
+
+        case "3":
+            print(f"Voiding ticket # A{ticket_number}.")
+            void_string += f"Ticket A{ticket_number}\n"
+            if payment_method == "1":
+                total_cash -= 5
+                void_string += f"Total Cash -$5.00\n"
+            elif payment_method == "3":
+                total_check -= 5
+                void_string += f"Total Check -$5.00\n"
+            else:
+                print("Void credit transaction using credit card reader.")
+
+    void_string += """========
+    END VOID
+    ========\n
+    """
+
+    return void_string
+            
+
 def save_transaction(car_qty,payment_method,subtotal,check_num,vsa_name,ticket_type,ticket_num):
     """ Generate a transaction report.
     car_qty: Number of tickets being sold
@@ -200,7 +259,8 @@ def main():
         3: Disabled Discount Day Use Sale
         4: Change current user
         5: Display Current Ticket Numbers
-        6: Quit and Print XREPORT
+        6: Void a Ticket Sale
+        7: Quit and Print XREPORT
         > """)
 
         match menu:
@@ -215,7 +275,7 @@ def main():
                     case "1":
                         print("Payment method: Cash")
                         payVars = payment(1, 10, car_amt)
-                        print("payVars = " + str(payVars))
+                        #print("payVars = " + str(payVars))
                         ticket_number = current_dayuse_ticket
 
                         # Save Report
@@ -241,7 +301,7 @@ def main():
                     case "3":
                         print("Payment method: Check")
                         payVars = payment(3,10,car_amt)
-                        print("payVars = " + str(payVars))
+                        #print("payVars = " + str(payVars))
                         ticket_number = current_dayuse_ticket
                         # SAVE TRANSACTION
                         transaction_report = save_transaction(car_amt,"Check",payVars[0],payVars[1],vsa_name,ticket_type,ticket_number)
@@ -255,7 +315,7 @@ def main():
                     case _:
                         print("Payment method: Cash")
                         payVars = payment(1, 10, car_amt)
-                        print("payVars = " + str(payVars))
+                        #print("payVars = " + str(payVars))
                         ticket_number = current_dayuse_ticket
 
                         # Save Report
@@ -278,7 +338,7 @@ def main():
                     case "1":
                         print("Payment method: Cash")
                         payVars = payment(1, ticket_price, car_amt)
-                        print("payVars = " + str(payVars))
+                        #print("payVars = " + str(payVars))
                         ticket_number = current_senior_ticket
 
                         # Save Report
@@ -304,7 +364,7 @@ def main():
                     case "3":
                         print("Payment method: Check")
                         payVars = payment(3,ticket_price,car_amt)
-                        print("payVars = " + str(payVars))
+                        #print("payVars = " + str(payVars))
                         ticket_number = current_senior_ticket
                         # SAVE TRANSACTION
                         transaction_report = save_transaction(car_amt,"Check",payVars[0],payVars[1],vsa_name,ticket_type,ticket_number)
@@ -318,7 +378,7 @@ def main():
                     case _:
                         print("Payment method: Cash")
                         payVars = payment(1, ticket_price, car_amt)
-                        print("payVars = " + str(payVars))
+                        #print("payVars = " + str(payVars))
                         ticket_number = current_senior_ticket
 
                         # Save Report
@@ -341,7 +401,7 @@ def main():
                     case "1":
                         print("Payment method: Cash")
                         payVars = payment(1, ticket_price, car_amt)
-                        print("payVars = " + str(payVars))
+                        #print("payVars = " + str(payVars))
                         ticket_number = current_disabled_ticket
 
                         # Save Report
@@ -367,7 +427,7 @@ def main():
                     case "3":
                         print("Payment method: Check")
                         payVars = payment(3,ticket_price,car_amt)
-                        print("payVars = " + str(payVars))
+                        #print("payVars = " + str(payVars))
                         ticket_number = current_disabled_ticket
                         # SAVE TRANSACTION
                         transaction_report = save_transaction(car_amt,"Check",payVars[0],payVars[1],vsa_name,ticket_type,ticket_number)
@@ -381,7 +441,7 @@ def main():
                     case _:
                         print("Payment method: Cash")
                         payVars = payment(1, ticket_price, car_amt)
-                        print("payVars = " + str(payVars))
+                        #print("payVars = " + str(payVars))
                         ticket_number = current_disabled_ticket
 
                         # Save Report
@@ -401,13 +461,19 @@ def main():
             case "5":
                 os.system('cls')
                 print("""Current Ticket Numbers
-                      ======================""")
+                ======================""")
                 print(f"Current Day Use Ticket: {current_dayuse_ticket}")
                 print(f"Current Senior Ticket: {current_senior_ticket}")
                 print(f"Current Disabled Discount Ticket: {current_disabled_ticket}")
                 input("Press Enter to return to main menu")
 
             case "6":
+                void_report = void_ticket()
+                with open(xfilename, 'a') as xfile:
+                    xfile.write(void_report)
+                    xfile.close()
+
+            case "7":
                 final_dayuse_ticket = current_dayuse_ticket
                 final_senior_ticket = current_senior_ticket
                 final_disabled_ticket = current_disabled_ticket
