@@ -5,7 +5,7 @@
 #
 # Created with Python 3.12.2
 #
-# Version 1.0.0
+# Version 1.4.0
 # 
 # Created by Ryan Porter (github.com/PorterRyan). 
 # Copyright 2024 Ryan Porter. This software is licensed under the GNU 
@@ -390,7 +390,7 @@ def main():
                             xfile.write(transaction_report)
                             xfile.close()
 
-            case "3":
+            case "3": # Sell Disabled Day Use Passes
                 os.system('cls')
                 ticket_price = 5
                 ticket_type = "Disabled Day Use"
@@ -453,19 +453,25 @@ def main():
                             xfile.write(transaction_report)
                             xfile.close()
 
-            case "4":
+            case "4": # Change the Service Aide Name
                 os.system('cls')
                 print("Change Current Service Aide")
                 vsa_name = input("Enter your name: ")
 
-            case "5":
+            case "5": # Display current ticket numbers
                 os.system('cls')
                 print("""Current Ticket Numbers
                 ======================""")
                 print(f"Current Day Use Ticket: {current_dayuse_ticket}")
+                print(f"Total Day Use Sales: {int(current_dayuse_ticket) - int(starting_dayuse_ticket)}\n")
+
                 print(f"Current Senior Ticket: {current_senior_ticket}")
+                print(f"Total Senior Sales: {int(current_senior_ticket) - int(starting_senior_ticket)}\n")
+
                 print(f"Current Disabled Discount Ticket: {current_disabled_ticket}")
+                print(f"Total Disabled Sales: {int(current_disabled_ticket) - int(starting_disabled_ticket)}\n")
                 input("Press Enter to return to main menu")
+                os.system('cls')
 
             case "6":
                 void_report = void_ticket()
