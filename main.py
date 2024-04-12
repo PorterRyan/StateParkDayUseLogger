@@ -30,6 +30,8 @@ from time import sleep
 from datetime import datetime
 import os, subprocess
 
+# GLOBAL VARIABLES
+
 # Park name. Edit for use in different state parks.
 park_name = "Portola Redwoods State Park"
 
@@ -121,7 +123,144 @@ def void_ticket():
     """
 
     return void_string
+
+def sell_annual_pass(vsa_name):
+    """Sell Golden Poppy or California Explorer annual passes.
+    vsa_name: Name of current VSA user.
+    """
+    poppy_price = 125
+    explorer_price = 195
+    month_abbr = ['Jan',
+                  'Feb',
+                  'Mar',
+                  'Apr',
+                  'May',
+                  'Jun',
+                  'Jul',
+                  'Aug',
+                  'Sep,'
+                  'Oct',
+                  'Nov',
+                  'Dec']
+    
+    timestamp = datetime.now()
+    pass_number = ""
+    expiration_month = str(month_abbr[timestamp.month - 1])
+    expiration_year = str(timestamp.year + 1)
+    subtotal = int()
+    check_num = False
+    payment_type = ""
+
+    os.system('cls')
+    pass_loop = True
+    while pass_loop: # Loop for simple input validation
+        pass_type = input(
+            """Select annual pass type:
+            [1] Golden Poppy Pass  [2] California Explorer Pass
+            > """)
+        if pass_type == "1" or pass_type == "2":
+            pass_loop = False
+        else:
+            continue
+    
+    match pass_type:
+        case "1":
+            pass_type = "Golden Poppy"
+            print(f"Selling {pass_type} Pass")
+            cancel_sale = input('If you wish to cancel, enter "Q", otherwise, just press "Enter": ')
+            if cancel_sale.upper() == "Q":
+                return
             
+            pass_number_loop = True # Loop for simple input validation
+            while pass_number_loop:
+                pass_number = input("Enter the last six digits of the pass number: ")
+                if len(pass_number) == 6:
+                    pass_number_loop = False
+                else:
+                    print("Invalid pass number!")
+                    continue
+            payment_type = input("[1] Cash  [2] Card  [3] Check: ")
+
+            match payment_type:
+                case "1":
+                    payment_type = "Cash"
+                    print("Payment method: Cash")
+                    subtotal = payment(1,poppy_price,1)
+                
+                case "2":
+                    payment_type = "Card"
+                    print("Payment method: Card")
+                    subtotal = payment(2,poppy_price,1)
+
+                case "3":
+                    payment_type = "Check"
+                    print("Payment method: Check")
+                    payVars = payment(3,poppy_price,1)
+                    subtotal = payVars[0]
+                    check_num = payVars[1]
+        
+        case "2":
+            pass_type = "California Explorer"
+            print(f"Selling {pass_type} Pass")
+            cancel_sale = input('If you wish to cancel, enter "Q", otherwise, just press "Enter": ')
+            if cancel_sale.upper() == "Q":
+                return
+            
+            pass_number_loop = True # Loop for simple input validation
+            while pass_number_loop:
+                pass_number = input("Enter the last six digits of the pass number: ")
+                if len(pass_number) == 6:
+                    pass_number_loop = False
+                else:
+                    print("Invalid pass number!")
+                    continue
+
+            payment_type = input("[1] Cash  [2] Card  [3] Check: ")
+
+            match payment_type:
+                case "1":
+                    payment_type = "Cash"
+                    print("Payment method: Cash")
+                    subtotal = payment(1,explorer_price,1)
+                
+                case "2":
+                    payment_type = "Card"
+                    print("Payment method: Card")
+                    subtotal = payment(2,explorer_price,1)
+
+                case "3":
+                    payment_type = "Check"
+                    print("Payment method: Check")
+                    payVars = payment(3,explorer_price,1)
+                    subtotal = payVars[0]
+                    check_num = payVars[1]
+    
+    transaction_string = '''\
+===
+{timestamp}
+Ticket type: {pass_type}
+Pass number: {pass_number}
+Expiration month: {month}
+Expiration year: {year}
+Quantity: 1
+Payment method: {payment_type}
+\
+'''.format(
+    timestamp=timestamp,
+    pass_type=pass_type,
+    pass_number=pass_number,
+    payment_type=payment_type,
+    month=expiration_month,
+    year=expiration_year)
+    if payment_type == "Check":
+        transaction_string += f"Check number: {check_num}\n"
+    transaction_string += '''\
+Subtotal: {subtotal}
+Service Aide: {vsa_name}
+===\n
+\
+'''.format(subtotal=subtotal,vsa_name=vsa_name)
+    return transaction_string,pass_type,payment_type,subtotal
 
 def save_transaction(car_qty,payment_method,subtotal,check_num,vsa_name,ticket_type,ticket_num):
     """ Generate a transaction report.
@@ -139,7 +278,7 @@ def save_transaction(car_qty,payment_method,subtotal,check_num,vsa_name,ticket_t
     ticket_list.append(ticket_num)
     transaction_string = "===\n"
     transaction_string += f'{timestamp}\n'
-    transaction_string += f'Ticket Type: {ticket_type}\n'
+    transaction_string += f'Ticket type: {ticket_type}\n'
     if car_qty > 1: # Handle sales of more than one ticket at once.
         ticket_iter = 1
         while ticket_iter <= car_qty - 1:
@@ -219,9 +358,16 @@ def main():
     current_dayuse_ticket = int(starting_dayuse_ticket)
     current_senior_ticket = int(starting_senior_ticket)
     current_disabled_ticket = int(starting_disabled_ticket)
+
+    # Amount Totals
     total_cash = 0
     total_check = 0
 
+    # Annual Pass Counters
+    total_golden_poppy = 0
+    total_california_explorer = 0
+
+    # X-Report Header
     xfile_header = "Day Use Ticket Log\n"
     xfile_header += f'{today}\n'
     xfile_header += f'Employee: {vsa_name}\n\n'
@@ -257,10 +403,11 @@ def main():
         1: Day Use Sale
         2: Senior Day Use Sale
         3: Disabled Discount Day Use Sale
-        4: Change current user
-        5: Display Current Ticket Numbers
-        6: Void a Ticket Sale
-        7: Quit and Print XREPORT
+        4: Annual Pass Sale
+        5: Change current user
+        6: Display Current Ticket Numbers
+        7: Void a Ticket Sale
+        8: Quit and Print XREPORT
         > """)
 
         match menu:
@@ -452,13 +599,33 @@ def main():
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
                             xfile.close()
+            
+            case "4": # Sell annual pass
+                saleVars = sell_annual_pass(vsa_name)
+                transaction_report = saleVars[0]
+                pass_type = saleVars[1]
+                payment_method = saleVars[2]
+                subtotal = saleVars[3]
+                if payment_method == "Cash":
+                    total_cash += subtotal
+                elif payment_method == "Check":
+                    total_check += subtotal
+                
+                if pass_type == "Golden Poppy":
+                    total_golden_poppy += 1
+                elif pass_type == "California Explorer":
+                    total_california_explorer += 1
 
-            case "4": # Change the Service Aide Name
+                with open(xfilename,'a') as xfile:
+                    xfile.write(transaction_report)
+                    xfile.close()
+
+            case "5": # Change the Service Aide Name
                 os.system('cls')
                 print("Change Current Service Aide")
                 vsa_name = input("Enter your name: ")
 
-            case "5": # Display current ticket numbers
+            case "6": # Display current ticket numbers
                 os.system('cls')
                 print("""Current Ticket Numbers
                 ======================""")
@@ -470,16 +637,19 @@ def main():
 
                 print(f"Current Disabled Discount Ticket: {current_disabled_ticket}")
                 print(f"Total Disabled Sales: {int(current_disabled_ticket) - int(starting_disabled_ticket)}\n")
+                print("====")
+                print(f"Golden Poppy sales: {str(total_golden_poppy)}")
+                print(f"California Explorer sales: {str(total_california_explorer)}")
                 input("Press Enter to return to main menu")
                 os.system('cls')
 
-            case "6":
+            case "7":
                 void_report = void_ticket()
                 with open(xfilename, 'a') as xfile:
                     xfile.write(void_report)
                     xfile.close()
 
-            case "7":
+            case "8":
                 final_dayuse_ticket = current_dayuse_ticket
                 final_senior_ticket = current_senior_ticket
                 final_disabled_ticket = current_disabled_ticket
@@ -499,11 +669,14 @@ def main():
                 xreport += "DAILY TOTALS\n"
                 xreport += "============\n"
                 xreport += ""
-                xreport += f'Total Day Use Sales: {total_dayuse_sales}\n'
-                xreport += f'Total Senior Day Use Sales: {total_senior_sales}\n'
-                xreport += f'Total Disabled Day Use Sales: {total_disabled_sales}\n'
-                xreport += ""
-                xreport += f'Total Cash: ${total_cash}.00'
+                xreport += f'Total Day Use sales: {total_dayuse_sales}\n'
+                xreport += f'Total Senior Day Use sales: {total_senior_sales}\n'
+                xreport += f'Total Disabled Day Use sales: {total_disabled_sales}\n'
+                xreport += f'Total Golden Poppy sales: {total_golden_poppy}\n'
+                xreport += f'Total California Explorer sales: {total_california_explorer}\n'
+                xreport += "\n"
+                xreport += f'Total Cash: ${total_cash}.00\n'
+                xreport += f'Total Check: ${total_check}.00'
                 with open(xfilename, 'a') as xfile:
                     xfile.write(xreport)
                     xfile.close()
