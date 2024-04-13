@@ -5,7 +5,7 @@
 #
 # Created with Python 3.12.2
 #
-# Version 1.5.1
+# Version 1.6.0
 # 
 # Created by Ryan Porter (github.com/PorterRyan). 
 # Copyright 2024 Ryan Porter. This software is licensed under the GNU 
@@ -39,6 +39,31 @@ park_name = "Portola Redwoods State Park"
 
 # Folder to save xreports in. Default is the Desktop.
 xreport_folder = os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'] + '\Desktop'
+
+def adjust_ticket_numbers():
+    """Adjust current ticket numbers
+    """
+    os.system('cls')
+    print("Ticket Number Adjustment")
+    print("========================")
+    print("What type of ticket would you like to adjust?")
+    ticket_type = input("[1] Day Use  [2] Senior  [3] Disabled [C]ancel: ")
+    match ticket_type.upper():
+        case "1":
+            new_ticket_number = ticket_validation("Enter new current ticket number: ")
+            current_dayuse_ticket = new_ticket_number
+            return "dayuse",current_dayuse_ticket
+        case "2":
+            new_ticket_number = ticket_validation("Enter new current senior ticket number: ")
+            current_senior_ticket = new_ticket_number
+            return "senior",current_senior_ticket
+        case "3":
+            new_ticket_number = ticket_validation("Enter new current disabled ticket number: ")
+            current_disabled_ticket = new_ticket_number
+            return "disabled",current_disabled_ticket
+        case "C":
+            print("Canceling...")
+            return "canceled"
 
 #Payment Function
 def payment(method,ticket_price,qty):
@@ -408,9 +433,10 @@ def main():
         3: Disabled Discount Day Use Sale
         4: Annual Pass Sale
         5: Change current user
-        6: Display Current Ticket Numbers
-        7: Void a Ticket Sale
-        8: Quit and Print XREPORT
+        6: Change current ticket numbers
+        7: Display Current Ticket Numbers
+        8: Void a Ticket Sale
+        9: Quit and Print XREPORT
         > """)
 
         match menu:
@@ -628,7 +654,20 @@ def main():
                 print("Change Current Service Aide")
                 vsa_name = input("Enter your name: ")
 
-            case "6": # Display current ticket numbers
+            case "6": # Change the current ticket number
+                change_results = adjust_ticket_numbers()
+                ticket_type = change_results[0]
+                new_number = change_results[1]
+                if ticket_type == "canceled":
+                    continue
+                elif ticket_type == "dayuse":
+                    current_dayuse_ticket = new_number
+                elif ticket_type == "senior":
+                    current_senior_ticket = new_number
+                elif ticket_type == "disabled":
+                    current_disabled_ticket = new_number
+
+            case "7": # Display current ticket numbers
                 os.system('cls')
                 print("""Current Ticket Numbers
                 ======================""")
@@ -646,13 +685,13 @@ def main():
                 input("Press Enter to return to main menu")
                 os.system('cls')
 
-            case "7":
+            case "8":
                 void_report = void_ticket()
                 with open(xfilename, 'a') as xfile:
                     xfile.write(void_report)
                     xfile.close()
 
-            case "8":
+            case "9":
                 final_dayuse_ticket = current_dayuse_ticket
                 final_senior_ticket = current_senior_ticket
                 final_disabled_ticket = current_disabled_ticket
@@ -690,6 +729,8 @@ def main():
                 subprocess.run(["notepad",xfilename])
                 input("Press 'Enter' when finished.")
                 return
+            case _:
+                continue
 
 if __name__ == "__main__":
     main()
