@@ -5,7 +5,7 @@
 #
 # Created with Python 3.12.2
 #
-# Version 1.5.0
+# Version 1.5.1
 # 
 # Created by Ryan Porter (github.com/PorterRyan). 
 # Copyright 2024 Ryan Porter. This software is licensed under the GNU 
@@ -24,6 +24,8 @@
 #
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see https://www.gnu.org/license/.
+
+# TODO Add feature to cancel in-progress ticket sales (see annual sales for example)
 
 # Imports
 from time import sleep
@@ -395,6 +397,7 @@ def main():
     menu = ""
 
     while menu != "q":
+        os.system('cls')
         print("Sale Mode")
         print(f"Current User: {vsa_name}")
         print("=========")
