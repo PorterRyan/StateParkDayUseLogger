@@ -26,6 +26,8 @@
 # with this program. If not, see https://www.gnu.org/license/.
 
 # TODO Reduce the number of lines in sale logs
+# TODO Add small and large buses
+# TODO Add accounting for Iron Ranger
 
 # Imports
 from time import sleep
@@ -398,6 +400,10 @@ def main():
     total_golden_poppy = 0
     total_california_explorer = 0
 
+    # Other Counters
+    total_small_buses = 0
+    total_large_buses = 0
+
     # X-Report Header
     xfile_header = "Day Use Ticket Log\n"
     xfile_header += f'{today}\n'
@@ -436,11 +442,12 @@ def main():
         2: Senior Day Use Sale
         3: Disabled Discount Day Use Sale
         4: Annual Pass Sale
-        5: Change current user
-        6: Change current ticket numbers
-        7: Display Current Ticket Numbers
-        8: Void a Ticket Sale
-        9: Quit and Print XREPORT
+        5: Small/Large Bus Pass Sale
+        6: Change current user
+        7: Change current ticket numbers
+        8: Display Current Ticket Numbers
+        9: Void a Ticket Sale
+        10: Quit and Print XREPORT
         > """)
 
         match menu:
@@ -661,13 +668,106 @@ def main():
                 with open(xfilename,'a') as xfile:
                     xfile.write(transaction_report)
                     xfile.close()
+            case "5": # Small/Large Bus Passes
+                os.system('cls')
+                print("Bus Day Use Ticket Sale")
+                ticket_type = ""
 
-            case "5": # Change the Service Aide Name
+                bus_size = input("[S]mall or [L]arge bus: ")
+                match bus_size.upper():
+                    case "S":
+                        ticket_type = "Small Bus"
+                        ticket_price = 50
+                        payment_method = input("[1] Cash | [2] Card | [3] check | [Q] Cancel: ")
+                        match payment_method.upper():
+                            case "1":
+                                print("Payment method: Cash")
+                                payVars = payment(1,ticket_price,1)
+                                # No ticket numbers for buses
+
+                                # Save Report
+                                transaction_report = save_transaction(1,"Cash",payVars,0,vsa_name,ticket_type,"N/A")
+                                print(transaction_report)
+                                total_cash += ticket_price
+                                total_small_buses += 1
+                                with open(xfilename, 'a') as xfile:
+                                    xfile.write(transaction_report)
+                                    xfile.close()
+                            case "2":
+                                print("Payment Method: Card")
+                                payVars = payment(2,ticket_price,1)
+                                # No ticket numbers for buses
+                                # Save Report
+                                transaction_report = save_transaction(1,"Card",payVars,0,vsa_name,ticket_type,"N/A")
+                                print(transaction_report)
+                                total_small_buses += 1
+                                with open(xfilename, 'a') as xfile:
+                                    xfile.write(transaction_report)
+                                    xfile.close()
+                            case "3":
+                                print("Payment Method: Check")
+                                payVars = payment(3,ticket_price,1)
+                                # No ticket numbers for buses
+                                # Save Report
+                                transaction_report = save_transaction(1,3,payVars[0],payVars[1],vsa_name,ticket_type,"N/A")
+                                print(transaction_report)
+                                total_check += ticket_price
+                                with open(xfilename, 'a') as xfile:
+                                    xfile.write(transaction_report)
+                                    xfile.close()
+                            case "Q":
+                                continue
+                    case "L":
+                        ticket_type = "Large Bus"
+                        ticket_price = 100
+                        payment_method = input("[1] Cash | [2] Card | [3] check | [Q] Cancel: ")
+                        match payment_method.upper():
+                            case "1":
+                                print("Payment method: Cash")
+                                payVars = payment(1,ticket_price,1)
+                                # No ticket numbers for buses
+
+                                # Save Report
+                                transaction_report = save_transaction(1,"Cash",payVars,0,vsa_name,ticket_type,"N/A")
+                                print(transaction_report)
+                                total_cash += ticket_price
+                                total_small_buses += 1
+                                with open(xfilename, 'a') as xfile:
+                                    xfile.write(transaction_report)
+                                    xfile.close()
+                            case "2":
+                                print("Payment Method: Card")
+                                payVars = payment(2,ticket_price,1)
+                                # No ticket numbers for buses
+                                # Save Report
+                                transaction_report = save_transaction(1,"Card",payVars,0,vsa_name,ticket_type,"N/A")
+                                print(transaction_report)
+                                total_small_buses += 1
+                                with open(xfilename, 'a') as xfile:
+                                    xfile.write(transaction_report)
+                                    xfile.close()
+                            case "3":
+                                print("Payment Method: Check")
+                                payVars = payment(3,ticket_price,1)
+                                # No ticket numbers for buses
+                                # Save Report
+                                transaction_report = save_transaction(1,3,payVars[0],payVars[1],vsa_name,ticket_type,"N/A")
+                                print(transaction_report)
+                                total_check += ticket_price
+                                with open(xfilename, 'a') as xfile:
+                                    xfile.write(transaction_report)
+                                    xfile.close()
+                            case "Q":
+                                continue
+                    case _:
+                        print('Please enter "S" for a small bus or "L" for a large bus.')
+
+            case "6": # Change the Service Aide Name
                 os.system('cls')
                 print("Change Current Service Aide")
                 vsa_name = input("Enter your name: ")
 
-            case "6": # Change the current ticket number
+            case "7": # Change the current ticket number
                 change_results = adjust_ticket_numbers()
                 ticket_type = change_results[0]
                 new_number = change_results[1]
@@ -680,7 +780,7 @@ def main():
                 elif ticket_type == "disabled":
                     current_disabled_ticket = new_number
 
-            case "7": # Display current ticket numbers
+            case "8": # Display current ticket numbers
                 os.system('cls')
                 print("""Current Ticket Numbers
                 ======================""")
@@ -698,13 +798,13 @@ def main():
                 input("Press Enter to return to main menu")
                 os.system('cls')
 
-            case "8":
+            case "9":
                 void_report = void_ticket()
                 with open(xfilename, 'a') as xfile:
                     xfile.write(void_report)
                     xfile.close()
 
-            case "9":
+            case "10":
                 final_dayuse_ticket = current_dayuse_ticket
                 final_senior_ticket = current_senior_ticket
                 final_disabled_ticket = current_disabled_ticket
