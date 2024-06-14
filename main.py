@@ -25,7 +25,7 @@
 # You should have received a copy of the GNU General Public License along
 # with this program. If not, see https://www.gnu.org/license/.
 
-# TODO Add feature to cancel in-progress ticket sales (see annual sales for example)
+# TODO Reduce the number of lines in sale logs
 
 # Imports
 from time import sleep
@@ -74,6 +74,10 @@ def payment(method,ticket_price,qty):
     """
     print("Running payment() now.")
     subtotal = int(ticket_price) * int(qty)
+    # Check if user wants to cancel the transaction
+    cancel_payment = input("Continue payment? Y/N: ")
+    if cancel_payment.upper() == "N":
+        return
     if method == 1:
         try:
             print(f'Amount due: ${subtotal}.00')
@@ -446,8 +450,8 @@ def main():
                 print("Day Use Ticket Sale")
                 car_amt = int(input("Number of cars: "))
                 ticket_price = 10
-                payment_method = input("[1] Cash | [2] Card | [3] Check: ")
-                match payment_method:
+                payment_method = input("[1] Cash | [2] Card | [3] Check | [Q] Cancel: ")
+                match payment_method.upper():
                     case "1":
                         print("Payment method: Cash")
                         payVars = payment(1, 10, car_amt)
@@ -488,6 +492,9 @@ def main():
                             xfile.write(transaction_report)
                             xfile.close()
                     
+                    case "Q":
+                        continue
+                    
                     case _:
                         print("Payment method: Cash")
                         payVars = payment(1, 10, car_amt)
@@ -509,7 +516,7 @@ def main():
                 ticket_type = "Senior Day Use"
                 print("Senior Day Use Ticket Sale")
                 car_amt = int(input("Number of cars: "))
-                payment_method = input("[1] Cash | [2] Card | [3] Check: ")
+                payment_method = input("[1] Cash | [2] Card | [3] Check | [Q] Cancel: ")
                 match payment_method:
                     case "1":
                         print("Payment method: Cash")
@@ -550,6 +557,9 @@ def main():
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
                             xfile.close()
+
+                    case "Q":
+                        continue
                     
                     case _:
                         print("Payment method: Cash")
@@ -572,7 +582,7 @@ def main():
                 ticket_type = "Disabled Day Use"
                 print("Disabled Day Use Ticket Sale")
                 car_amt = int(input("Number of cars: "))
-                payment_method = input("[1] Cash | [2] Card | [3] Check: ")
+                payment_method = input("[1] Cash | [2] Card | [3] Check | [Q] Cancel: ")
                 match payment_method:
                     case "1":
                         print("Payment method: Cash")
@@ -613,6 +623,9 @@ def main():
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
                             xfile.close()
+
+                    case "Q":
+                        continue
 
                     case _:
                         print("Payment method: Cash")
