@@ -26,6 +26,8 @@
 # with this program. If not, see https://www.gnu.org/license/.
 
 # TODO Reduce the number of lines in sale logs
+# TODO Add small and large buses
+# TODO Add accounting for Iron Ranger
 # TODO Add camping sales (regular, senior, disabled)
 # TODO Add Extra Vehicle sales
 # TODO Add trail camp sales
