@@ -649,7 +649,7 @@ def main():
     total_xv = 0
     total_hb = 0
     total_tc = 0
-
+    
     # Other Counters
     total_small_buses = 0
     total_large_buses = 0
@@ -704,7 +704,7 @@ def main():
         14: Switch to a new ticket roll
         15: Display Current Ticket Numbers
         16: Void a Ticket Sale (experimental)
-        17: Quit and Print XREPORT
+        X: Quit and Print XREPORT
         > """)
 
         match menu.upper():
@@ -993,6 +993,7 @@ def main():
                 with open(xfilename,'a') as xfile:
                     xfile.write(transaction_report)
                     xfile.close()
+                    
             case "5": # Small/Large Bus Passes
                 clear()
                 print("Bus Day Use Ticket Sale")
@@ -1326,6 +1327,7 @@ Service Aide: {vsa_name}
                 vsa_name = input("Enter your name: ")
 
             case "13": # Change the current ticket number
+
                 change_results = adjust_ticket_numbers()
                 ticket_type = change_results[0]
                 new_number = change_results[1]
@@ -1399,12 +1401,14 @@ Service Aide: {vsa_name}
                 clear()
 
             case "16": # VOID TICKET (needs work)
+
                 void_report = void_ticket()
                 with open(xfilename, 'a') as xfile:
                     xfile.write(void_report)
                     xfile.close()
 
             case "X": # XREPORT
+
                 final_dayuse_ticket = current_dayuse_ticket
                 final_senior_ticket = current_senior_ticket
                 final_disabled_ticket = current_disabled_ticket
