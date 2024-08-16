@@ -707,6 +707,7 @@ def main():
         15: Display Current Ticket Numbers
         16: Void a Ticket Sale (experimental)
         X: Quit and Print XREPORT
+        X: Quit and Print XREPORT
         > """)
 
         match menu.upper():
@@ -1007,6 +1008,7 @@ def main():
                 with open(xfilename,'a') as xfile:
                     xfile.write(transaction_report)
                     xfile.close()
+                    
             case "5": # Small/Large Bus Passes
                 clear()
                 print("Bus Day Use Ticket Sale")
