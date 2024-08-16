@@ -31,7 +31,7 @@
 
 # Imports
 from time import sleep
-from datetime import datetime
+import datetime
 import os, subprocess
 
 # GLOBAL VARIABLES
@@ -80,10 +80,7 @@ def payment(method,ticket_price,qty):
     """
     print("Running payment() now.")
     subtotal = float(ticket_price) * int(qty)
-    # Check if user wants to cancel the transaction
-    cancel_payment = input("Continue payment? Y/N: ")
-    if cancel_payment.upper() == "N":
-        return
+        
     if method == 1:
         try:
             print(f'Amount due: ${subtotal}0')
@@ -169,11 +166,14 @@ def sell_campsite(vsa_name,site_type,site_list):
     vsa_name: Name of current VSA user.
     site_type: sr, reg, or dis for Senior, Regular, or Disabled campsites.
     """
-    timestamp = str(datetime.now())
+    timestamp = str(datetime.datetime.now())
     reg_price = 35
     sr_price = 33
     dis_price = 17.5
     site_number = ""
+
+    due_out = datetime.datetime.now() + datetime.timedelta(days=int(nights))
+    due_out = due_out.date()
 
     match site_type:
         case "reg": # Sell a regular campsite
@@ -281,12 +281,14 @@ def sell_campsite(vsa_name,site_type,site_list):
 {timestamp}
 Ticket type: {site_type}
 Site number: {site_number}
+Due out: {due_out}
 Payment method: {payment_type}
 \
 '''.format(
     timestamp=timestamp,
     site_type=site_type,
     site_number=site_number,
+    due_out=due_out,
     payment_type=payment_type)
     if payment_type == "Check":
         transaction_string += f"Check number: {check_num}\n"
@@ -318,7 +320,7 @@ def sell_annual_pass(vsa_name):
                   'Nov',
                   'Dec']
     
-    timestamp = datetime.now()
+    timestamp = datetime.datetime.now()
     pass_number = ""
     expiration_month = str(month_abbr[timestamp.month - 1])
     expiration_year = str(timestamp.year + 1)
@@ -447,7 +449,7 @@ def save_transaction(car_qty,payment_method,subtotal,check_num,vsa_name,ticket_t
     ticket_type: Type of ticket (Day use, Senior, Disabled Discount)
     ticket_num: Current ticket number at start of transaction.
     """
-    timestamp = str(datetime.now())
+    timestamp = str(datetime.datetime.now())
     car_qty = int(car_qty)
     ticket_list = []
     ticket_list.append(ticket_num)
@@ -544,7 +546,7 @@ def main():
     sleep(3)
     clear()
 
-    today = "{:%m-%d-%Y}".format(datetime.now())
+    today = "{:%m-%d-%Y}".format(datetime.datetime.now())
 
     site_list = ("2",
                  "3",
@@ -704,7 +706,7 @@ def main():
         14: Switch to a new ticket roll
         15: Display Current Ticket Numbers
         16: Void a Ticket Sale (experimental)
-        17: Quit and Print XREPORT
+        X: Quit and Print XREPORT
         > """)
 
         match menu.upper():
@@ -712,6 +714,10 @@ def main():
                 clear()
                 ticket_type = "Day Use"
                 print("Day Use Ticket Sale")
+                #Confirm or cancel sale
+                cancel = input("Continue with sale? Y/N: ")
+                if cancel.upper() == "N":
+                    continue
                 car_amt = int(input("Number of cars: "))
                 ticket_price = 10
                 payment_method = input("[1] Cash | [2] Card | [3] Check | [Q] Cancel: ")
@@ -802,6 +808,10 @@ def main():
                 ticket_price = 9
                 ticket_type = "Senior Day Use"
                 print("Senior Day Use Ticket Sale")
+                #Confirm or cancel sale
+                cancel = input("Continue with sale? Y/N: ")
+                if cancel.upper() == "N":
+                    continue
                 car_amt = int(input("Number of cars: "))
                 payment_method = input("[1] Cash | [2] Card | [3] Check | [Q] Cancel: ")
                 match payment_method:
@@ -892,6 +902,10 @@ def main():
                 ticket_price = 5
                 ticket_type = "Disabled Day Use"
                 print("Disabled Day Use Ticket Sale")
+                #Confirm or cancel sale
+                cancel = input("Continue with sale? Y/N: ")
+                if cancel.upper() == "N":
+                    continue
                 car_amt = int(input("Number of cars: "))
                 payment_method = input("[1] Cash | [2] Card | [3] Check | [Q] Cancel: ")
                 match payment_method:
@@ -996,6 +1010,10 @@ def main():
             case "5": # Small/Large Bus Passes
                 clear()
                 print("Bus Day Use Ticket Sale")
+                #Confirm or cancel sale
+                cancel = input("Continue with sale? Y/N: ")
+                if cancel.upper() == "N":
+                    continue
                 ticket_type = ""
 
                 bus_size = input("[S]mall or [L]arge bus: ")
@@ -1151,10 +1169,13 @@ def main():
                     xfile.close()
 
             case "9": # Extra Vehicle Sales
-                timestamp = str(datetime.now())
+                timestamp = str(datetime.datetime.now())
                 xv_price = 10
                 print("Selling Extra Vehicle")
-
+                #Confirm or cancel sale
+                cancel = input("Continue with sale? Y/N: ")
+                if cancel.upper() == "N":
+                    continue
                 site_number_loop = True # Loop for simple input validation
                 while site_number_loop:
                     site_number = input("Enter site number: ")
@@ -1164,7 +1185,8 @@ def main():
                         print("Invalid site number!")
                         continue
                 nights = input("Number of nights: ")
-
+                due_out = datetime.datetime.now() + datetime.timedelta(days=int(nights))
+                due_out = due_out.date()
                 payment_type = input("[1] Cash  [2] Card  [3] Check: ")
 
                 match payment_type:
@@ -1191,9 +1213,10 @@ def main():
 Ticket type: Extra Vehicle
 Site number: {site_number}
 Due Out: {due_out}
+Number of nights: {nights}
 Payment method: {payment_type}
 \
-'''.format(timestamp=timestamp,site_number=site_number,due_out=timestamp + nights,payment_type=payment_type)
+'''.format(timestamp=timestamp,site_number=site_number,due_out=due_out,nights=nights,payment_type=payment_type)
                 if payment_type == "Check":
                     transaction_string += f"Check number: {check_num}\n"
                     total_check += subtotal
@@ -1211,7 +1234,7 @@ Service Aide: {vsa_name}
                     xfile.close()
 
             case "10": # Trail Camp Sales
-                timestamp = str(datetime.now())
+                timestamp = str(datetime.datetime.now())
                 tr_price = 15
                 res_fee = 8
                 total_price = tr_price + res_fee
@@ -1267,7 +1290,7 @@ Service Aide: {vsa_name}
                     xfile.close()
                 
             case "11": # Hike/Bike
-                timestamp = str(datetime.now())
+                timestamp = str(datetime.datetime.now())
                 hb_price = 5
                 qty = int(0)
                 print("Selling Hike/Bike Camping")
