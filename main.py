@@ -172,7 +172,7 @@ def sell_campsite(vsa_name,site_type,site_list):
     dis_price = 17.5
     site_number = ""
 
-    due_out = datetime.datetime.now() + datetime.timedelta(days=int(nights))
+    due_out = datetime.datetime.now() + datetime.timedelta(days=1)
     due_out = due_out.date()
 
     match site_type:
@@ -293,11 +293,11 @@ Payment method: {payment_type}
     if payment_type == "Check":
         transaction_string += f"Check number: {check_num}\n"
     transaction_string += '''\
-Subtotal: {subtotal}
+Subtotal: {0:.2f}
 Service Aide: {vsa_name}
 ===\n
 \
-'''.format(subtotal=subtotal,vsa_name=vsa_name)
+'''.format(subtotal,vsa_name=vsa_name)
     return transaction_string,site_type,payment_type,subtotal
 
 
@@ -432,11 +432,11 @@ Payment method: {payment_type}
     if payment_type == "Check":
         transaction_string += f"Check number: {check_num}\n"
     transaction_string += '''\
-Subtotal: {subtotal}
+Subtotal: {0:.2f}
 Service Aide: {vsa_name}
 ===\n
 \
-'''.format(subtotal=subtotal,vsa_name=vsa_name)
+'''.format(subtotal,vsa_name=vsa_name)
     return transaction_string,pass_type,payment_type,subtotal
 
 def save_transaction(car_qty,payment_method,subtotal,check_num,vsa_name,ticket_type,ticket_num):
@@ -471,7 +471,7 @@ def save_transaction(car_qty,payment_method,subtotal,check_num,vsa_name,ticket_t
     print(ticket_list)
     transaction_string += f'Number of cars: {car_qty}\n'
     transaction_string += f'Payment method: {payment_method}\n'
-    transaction_string += f'Subtotal: {subtotal}\n'
+    transaction_string += f'Subtotal: {subtotal:.2f}\n'
     if payment_method == "Check":
         transaction_string += f'Check Number: {check_num}\n'
     transaction_string += f'Service Aide: {vsa_name}\n'  
@@ -638,6 +638,7 @@ def main():
 
     # Amount Totals
     total_cash = 0
+    total_card = 0
     total_check = 0
 
     # Annual Pass Counters
@@ -719,7 +720,7 @@ def main():
                 if cancel.upper() == "N":
                     continue
                 car_amt = int(input("Number of cars: "))
-                ticket_price = 10
+                ticket_price = float(10.00)
                 payment_method = input("[1] Cash | [2] Card | [3] Check | [Q] Cancel: ")
                 match payment_method.upper():
                     case "1":
@@ -758,6 +759,7 @@ def main():
                             current_dayuse_ticket += (1 * car_amt)
                         elif current_dayuse_ticket_2 > 0:
                             current_dayuse_ticket_2 += (1 * car_amt)
+                        total_card += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
                             xfile.close()
@@ -805,7 +807,7 @@ def main():
                         
             case "2":
                 clear()
-                ticket_price = 9
+                ticket_price = float(9.00)
                 ticket_type = "Senior Day Use"
                 print("Senior Day Use Ticket Sale")
                 #Confirm or cancel sale
@@ -850,6 +852,7 @@ def main():
                             current_senior_ticket += (1 * car_amt)
                         elif current_senior_ticket_2 > 0:
                             current_senior_ticket_2 += (1 * car_amt)
+                        total_card += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
                             xfile.close()
@@ -899,7 +902,7 @@ def main():
 
             case "3": # Sell Disabled Day Use Passes
                 clear()
-                ticket_price = 5
+                ticket_price = float(5.00)
                 ticket_type = "Disabled Day Use"
                 print("Disabled Day Use Ticket Sale")
                 #Confirm or cancel sale
@@ -944,6 +947,7 @@ def main():
                             current_disabled_ticket += (1 * car_amt)
                         elif current_disabled_ticket_2 > 0:
                             current_disabled_ticket_2 += (1 * car_amt)
+                        total_card += (ticket_price * car_amt)
                         with open(xfilename, 'a') as xfile:
                             xfile.write(transaction_report)
                             xfile.close()
@@ -996,6 +1000,8 @@ def main():
                 subtotal = saleVars[3]
                 if payment_method == "Cash":
                     total_cash += subtotal
+                elif payment_method == "Card":
+                    total_card += subtotal
                 elif payment_method == "Check":
                     total_check += subtotal
                 
@@ -1021,7 +1027,7 @@ def main():
                 match bus_size.upper():
                     case "S":
                         ticket_type = "Small Bus"
-                        ticket_price = 50
+                        ticket_price = float(50.00)
                         payment_method = input("[1] Cash | [2] Card | [3] check | [Q] Cancel: ")
                         match payment_method.upper():
                             case "1":
@@ -1045,6 +1051,7 @@ def main():
                                 transaction_report = save_transaction(1,"Card",payVars,0,vsa_name,ticket_type,"N/A")
                                 print(transaction_report)
                                 total_small_buses += 1
+                                total_card += ticket_price
                                 with open(xfilename, 'a') as xfile:
                                     xfile.write(transaction_report)
                                     xfile.close()
@@ -1063,7 +1070,7 @@ def main():
                                 continue
                     case "L":
                         ticket_type = "Large Bus"
-                        ticket_price = 100
+                        ticket_price = float(100.00)
                         payment_method = input("[1] Cash | [2] Card | [3] check | [Q] Cancel: ")
                         match payment_method.upper():
                             case "1":
@@ -1087,6 +1094,7 @@ def main():
                                 transaction_report = save_transaction(1,"Card",payVars,0,vsa_name,ticket_type,"N/A")
                                 print(transaction_report)
                                 total_small_buses += 1
+                                total_card += ticket_price
                                 with open(xfilename, 'a') as xfile:
                                     xfile.write(transaction_report)
                                     xfile.close()
@@ -1119,6 +1127,8 @@ def main():
                 subtotal = saleVars[3]
                 if payment_method == "Cash":
                     total_cash += subtotal
+                elif payment_method == "Card":
+                    total_card += subtotal
                 elif payment_method == "Check":
                     total_check += subtotal
                 total_regular_campsite += 1
@@ -1161,6 +1171,8 @@ def main():
                 subtotal = saleVars[3]
                 if payment_method == "Cash":
                     total_cash += subtotal
+                elif payment_method == "Card":
+                    total_card += subtotal
                 elif payment_method == "Check":
                     total_check += subtotal
                 total_disabled_campsite += 1
@@ -1223,12 +1235,14 @@ Payment method: {payment_type}
                     total_check += subtotal
                 elif payment_type == "Cash":
                     total_cash += subtotal
+                elif payment_type == "Card":
+                    total_card += subtotal
                 transaction_string += '''\
-Subtotal: {subtotal}
+Subtotal: {0:.2f}
 Service Aide: {vsa_name}
 ===\n
 \
-'''.format(subtotal=subtotal,vsa_name=vsa_name)
+'''.format(subtotal,vsa_name=vsa_name)
                 total_xv += 1
                 with open(xfilename, 'a') as xfile:
                     xfile.write(transaction_string)
@@ -1277,14 +1291,16 @@ Payment method: {payment_type}
                     total_check += subtotal
                 elif payment_type == "Cash":
                     total_cash += subtotal
+                elif payment_type == "Card":
+                    total_card += subtotal
                 transaction_string += '''\
 Camping Fee: {tr_price}
 Reservation Fee: {res_fee}
-Subtotal: {subtotal}
+Subtotal: {0:.2f}
 Service Aide: {vsa_name}
 ===\n
 \
-'''.format(subtotal=subtotal,vsa_name=vsa_name,res_fee=res_fee,tr_price=tr_price)
+'''.format(tr_price,res_fee,subtotal,vsa_name=vsa_name)
                 total_tc += 1
                 with open(xfilename, 'a') as xfile:
                     xfile.write(transaction_string)
@@ -1331,13 +1347,15 @@ Payment method: {payment_type}
                     total_check += subtotal
                 elif payment_type == "Cash":
                     total_cash += subtotal
+                elif payment_type == "Card":
+                    total_card += subtotal
                 transaction_string += '''\
 Camping Fee: {hb_price}
-Subtotal: {subtotal}
+Subtotal: {0:.2f}
 Service Aide: {vsa_name}
 ===\n
 \
-'''.format(subtotal=subtotal,vsa_name=vsa_name,hb_price=hb_price)
+'''.format(hb_price,subtotal,vsa_name=vsa_name)
                 total_hb += qty
                 with open(xfilename, 'a') as xfile:
                     xfile.write(transaction_string)
@@ -1419,6 +1437,7 @@ Service Aide: {vsa_name}
                 print("====")
                 print(f"Golden Poppy sales: {str(total_golden_poppy)}")
                 print(f"California Explorer sales: {str(total_california_explorer)}")
+                print(f"Total Extra Vehicle Sales: {str(total_xv)}")
                 input("Press Enter to return to main menu")
                 clear()
 
@@ -1449,7 +1468,7 @@ Service Aide: {vsa_name}
                 if final_senior_ticket_2 == 0:
                     total_senior_sales = int(final_senior_ticket) - int(starting_senior_ticket)
                 elif final_senior_ticket_2 > 0:
-                    total_senior_sales = (int(final_senior_ticket) - int(starting_senior_ticket)) + (int(final_senior_ticket_2) - int(current))
+                    total_senior_sales = (int(final_senior_ticket) - int(starting_senior_ticket)) + (int(final_senior_ticket_2) - int(current_senior_ticket_2))
                 
                 total_disabled_sales = int(final_disabled_ticket) - int(starting_disabled_ticket)
 
@@ -1478,6 +1497,8 @@ Service Aide: {vsa_name}
                 else:
                     xreport += f'Unsold Disabled Day Use Ticket: {disabled_letter}{final_disabled_ticket}\n\n'
 
+
+
                 xreport += "DAILY TOTALS\n"
                 xreport += "============\n"
                 xreport += ""
@@ -1489,13 +1510,15 @@ Service Aide: {vsa_name}
                 xreport += f'Total Regular Campsites: {total_regular_campsite}\n'
                 xreport += f'Total Senior Campsites: {total_senior_campsite}\n'
                 xreport += f'Total Disabled Discount Campsites: {total_disabled_campsite}\n'
+                xreport += f'Total Extra Vehicle Sales: {total_xv}\n'
                 xreport += f'Total Trail Camp Sales: {total_tc}\n'
                 xreport += f'Total Hike/Bike Sales: {total_hb}\n'
                 xreport += f'Total Golden Poppy sales: {total_golden_poppy}\n'
                 xreport += f'Total California Explorer sales: {total_california_explorer}\n'
                 xreport += "\n"
-                xreport += f'Total Cash: ${total_cash}.00\n'
-                xreport += f'Total Check: ${total_check}.00'
+                xreport += f'Total Cash: ${total_cash:.2f}\n'
+                xreport += f'Total Card: ${total_card:.2f}\n'
+                xreport += f'Total Check: ${total_check:.2f}'
                 with open(xfilename, 'a') as xfile:
                     xfile.write(xreport)
                     xfile.close()
