@@ -603,7 +603,11 @@ def main():
                  "61",
                  "62",
                  "63",
-                 "64")
+                 "64",
+                 "C",
+                 "H",
+                 "R",
+                 "P")
 
     # Create XREPORT file
     xfilename = f"{xreport_folder}\\xreport_{today}.txt"
@@ -1191,8 +1195,10 @@ def main():
                     continue
                 site_number_loop = True # Loop for simple input validation
                 while site_number_loop:
-                    site_number = input("Enter site number: ")
-                    if site_number in site_list:
+                    site_number = input("""
+Enter site number or first letter of group site name (C, H, R, P) below 
+> """)
+                    if site_number.upper() in site_list:
                         site_number_loop = False
                     else:
                         print("Invalid site number!")
@@ -1219,7 +1225,7 @@ def main():
                         payVars = payment(3,xv_price,nights)
                         subtotal = payVars[0]
                         check_num = payVars[1]
-                
+                site_number = site_number.upper()
                 transaction_string = '''\
 ===
 {timestamp}
