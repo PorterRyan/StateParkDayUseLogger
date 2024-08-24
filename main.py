@@ -607,7 +607,8 @@ def main():
                  "C",
                  "H",
                  "R",
-                 "P")
+                 "P",
+                 "TC")
 
     # Create XREPORT file
     xfilename = f"{xreport_folder}\\xreport_{today}.txt"
@@ -1196,7 +1197,8 @@ def main():
                 site_number_loop = True # Loop for simple input validation
                 while site_number_loop:
                     site_number = input("""
-Enter site number or first letter of group site name (C, H, R, P) below 
+Enter site number or first letter of group site name (C, H, R, P) below.
+Enter "TC" for Trail Camp extra vehicles. 
 > """)
                     if site_number.upper() in site_list:
                         site_number_loop = False
