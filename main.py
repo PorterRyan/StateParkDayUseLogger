@@ -1435,12 +1435,12 @@ Service Aide: {vsa_name}
                     print(f'Total Day Use Sales: {total_senior_sales}\n')
                 
                 if disabled_roll_2_starting_number == 0:
-                    print(f"Current Senior Ticket: {disabled_letter}{current_disabled_ticket}")
-                    print(f"Total Senior Sales: {int(current_disabled_ticket) - int(starting_disabled_ticket)}\n")
+                    print(f"Current Disabled Discount Ticket: {disabled_letter}{current_disabled_ticket}")
+                    print(f"Total Disabled Discount Sales: {int(current_disabled_ticket) - int(starting_disabled_ticket)}\n")
                 else:
-                    print(f'Current Senior Day Use Ticket: {disabled_roll_2_letter}{current_disabled_ticket_2}')
+                    print(f'Current Disabled Discount Day Use Ticket: {disabled_roll_2_letter}{current_disabled_ticket_2}')
                     total_disabled_sales = (int(current_disabled_ticket) - int(starting_disabled_ticket)) + (int(current_disabled_ticket_2) - int(disabled_roll_2_starting_number))
-                    print(f'Total Day Use Sales: {total_disabled_sales}\n')
+                    print(f'Total Disabled Discount Day Use Sales: {total_disabled_sales}\n')
 
                 print("====")
                 print(f"Golden Poppy sales: {str(total_golden_poppy)}")
