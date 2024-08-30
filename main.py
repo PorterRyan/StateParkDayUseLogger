@@ -5,7 +5,7 @@
 #
 # Created with Python 3.12.2
 #
-# Version 1.7.0
+# Version 2.1.0
 # 
 # Created by Ryan Porter (github.com/PorterRyan). 
 # Copyright 2024 Ryan Porter. This software is licensed under the GNU 
@@ -26,7 +26,6 @@
 # with this program. If not, see https://www.gnu.org/license/.
 
 # TODO Reduce the number of lines in sale logs
-# TODO Add accounting for Iron Ranger
 # TODO Second roll variables need to be cast as int for counting
 
 # Imports
@@ -44,6 +43,23 @@ xreport_folder = os.environ['HOMEDRIVE'] + os.environ['HOMEPATH'] + '\\Desktop'
 
 def clear():
     _ = subprocess.call('cls', shell=True)
+
+def iron_ranger():
+    """Account for Iron Ranger sales
+    """
+    cash = input("Enter total cash collected from Iron Ranger: ")
+    check = input("Enter total checks collected from Iron Ranger: ")
+    day_use_total = input("Enter total Day Use envelopes received that included payment: ")
+    senior_day_use_total = input("Enter total Senior Day Use envelopes received that included payment: ")
+    disabled_day_use_total = input("Enter total Disabled Discount Day Use envelopes received that included payment: ")
+    reg_camping_total = input("Enter total regular camping envelopes received that included payment: ")
+    senior_camping_total = input("Enter total Senior camping envelopes received that included payment: ")
+    dis_camping_total = input("Enter total Disabled Discount camping envelopes received that included payment: ")
+    xv_total = input("Enter total extra vehicle envelopes received that included payment: ")
+
+    return cash,check,day_use_total,senior_day_use_total,disabled_day_use_total,reg_camping_total,senior_camping_total,dis_camping_total,xv_total
+    
+
 
 def adjust_ticket_numbers():
     """Adjust current ticket numbers
@@ -658,6 +674,15 @@ def main():
     total_hb = 0
     total_tc = 0
 
+    # Iron Ranger Counters
+    total_ir_rdu = 0
+    total_ir_sdu = 0
+    total_ir_ddu = 0
+    total_ir_camp = 0
+    total_ir_scamp = 0
+    total_ir_dcamp = 0
+    total_ir_xv = 0
+
     # Other Counters
     total_small_buses = 0
     total_large_buses = 0
@@ -712,6 +737,7 @@ def main():
         14: Switch to a new ticket roll
         15: Display Current Ticket Numbers
         16: Void a Ticket Sale (experimental)
+        17: Enter Iron Ranger Amounts
         X: Quit and Print XREPORT
         > """)
 
@@ -1454,6 +1480,20 @@ Service Aide: {vsa_name}
                 with open(xfilename, 'a') as xfile:
                     xfile.write(void_report)
                     xfile.close()
+            
+            case "17": # Enter Iron Ranger Totals
+                clear()
+                IR_list = iron_ranger()
+                total_cash += int(IR_list[0])
+                total_check += int(IR_list[1])
+                total_ir_rdu += int(IR_list[2])
+                total_ir_sdu += int(IR_list[3])
+                total_ir_ddu += int(IR_list[4])
+                total_ir_camp += int(IR_list[5])
+                total_ir_scamp += int(IR_list[6])
+                total_ir_dcamp += int(IR_list[7])
+                total_ir_xv += int(IR_list[8])
+
 
             case "X": # XREPORT
                 final_dayuse_ticket = current_dayuse_ticket
@@ -1524,6 +1564,13 @@ Service Aide: {vsa_name}
                 xreport += f'Total Golden Poppy sales: {total_golden_poppy}\n'
                 xreport += f'Total California Explorer sales: {total_california_explorer}\n'
                 xreport += "\n"
+                xreport += f'Total Iron Ranger Regular Day Use: {total_ir_rdu}\n'
+                xreport += f'Total Iron Ranger Senior Day Use: {total_ir_sdu}\n'
+                xreport += f'Total Iron Ranger Disabled Discount Day Use: {total_ir_ddu}\n'
+                xreport += f'Total Iron Ranger Regular Camping: {total_ir_camp}\n'
+                xreport += f'Total Iron Ranger Senior Camping: {total_ir_scamp}\n'
+                xreport += f'Total Iron Ranger Disabled Discount Camping: {total_ir_dcamp}\n'
+                xreport += f'Total Iron Ranger Extra Vehicles: {total_ir_xv}\n\n'
                 xreport += f'Total Cash: ${total_cash:.2f}\n'
                 xreport += f'Total Card: ${total_card:.2f}\n'
                 xreport += f'Total Check: ${total_check:.2f}'
