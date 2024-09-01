@@ -1472,6 +1472,8 @@ Service Aide: {vsa_name}
                 print(f"Golden Poppy sales: {str(total_golden_poppy)}")
                 print(f"California Explorer sales: {str(total_california_explorer)}")
                 print(f"Total Extra Vehicle Sales: {str(total_xv)}")
+                print(f'Total Cash: ${total_cash:.2f}')
+                print(f'Total Card: ${total_card:.2f}')
                 input("Press Enter to return to main menu")
                 clear()
 
