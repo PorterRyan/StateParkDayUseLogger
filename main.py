@@ -1277,7 +1277,7 @@ Service Aide: {vsa_name}
 ===\n
 \
 '''.format(subtotal,vsa_name=vsa_name)
-                total_xv += nights
+                total_xv += int(nights)
                 with open(xfilename, 'a') as xfile:
                     xfile.write(transaction_string)
                     xfile.close()
